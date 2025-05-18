@@ -22,7 +22,7 @@
 		<javac srcdir="${src_dir}" destdir="${bin_dir}" includeantruntime="false">
 			<classpath>
 				<fileset dir="${lib_dir}">
-					<include name="*.jar"/>
+					<include name="**/*.jar"/>
 				</fileset>
 			</classpath>
 		</javac>
@@ -37,7 +37,7 @@
 	<target name="jar" depends="compile" description="Generates an executable JAR file, '${jar_name}', from compiled source code.">
 		<manifestclasspath property="jar_classpath" jarfile="${jar_name}">
 			<classpath>
-				<fileset dir="${lib_dir}" includes="*.jar"/>
+				<fileset dir="${lib_dir}" includes="**/*.jar"/>
 			</classpath>
 		</manifestclasspath>
 		<jar jarfile="${jar_name}" basedir="${bin_dir}">
