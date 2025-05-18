@@ -1,0 +1,54 @@
+<project name="Minimal Java" default="all" basedir=".">
+	<property name="src_dir" value="src"/>
+	<property name="bin_dir" value="bin"/>
+	<property name="lib_dir" value="lib"/>
+	<property name="res_dir" value="res"/>
+	
+	<property name="jar_name" value="MinimalJava.jar"/>
+	<property name="libjar_name" value="lib${jar_name}"/>
+	<property name="mainclass" value="joel.minimaljava.MinimalJava"/>
+	
+	<target name="prepare" description="Creates output directories if not exists.">
+		<mkdir dir="${bin_dir}"/>
+	</target>
+	
+	<target name="clean" description="Deletes generated output files.">
+		<delete dir="${bin_dir}"/>
+		<delete file="${jar_name}"/>
+		<delete file="${libjar_name}"/>
+	</target>
+	
+	<target name="compile" depends="prepare" description="Compiles source code into '${bin_dir}' directory.">
+		<javac srcdir="${src_dir}" destdir="${bin_dir}" includeantruntime="false">
+			<classpath>
+				<fileset dir="${lib_dir}">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="lib" depends="compile" description="Generates '${libjar_name}' JAR file, with no main class, from compiled source code.">
+		<jar jarfile="${libjar_name}" basedir="${bin_dir}">
+			<fileset dir="${res_dir}"/>
+		</jar>
+	</target>
+	
+	<target name="jar" depends="compile" description="Generates an executable JAR file, '${jar_name}', from compiled source code.">
+		<manifestclasspath property="jar_classpath" jarfile="${jar_name}">
+			<classpath>
+				<fileset dir="${lib_dir}" includes="*.jar"/>
+			</classpath>
+		</manifestclasspath>
+		<jar jarfile="${jar_name}" basedir="${bin_dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${mainclass}"/>
+				<attribute name="Class-Path" value="${jar_classpath}"/>
+			</manifest>
+			<fileset dir="${res_dir}"/>
+		</jar>
+	</target>
+	
+	<target name="all" depends="clean,jar" description="Cleans, compiles, then builds an executable JAR file."/>
+	
+</project>
